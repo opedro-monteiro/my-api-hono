@@ -1,0 +1,19 @@
+{
+  "imports": {
+    "@types/pg": "npm:@types/pg@^8.11.11",
+    "dotenv": "npm:dotenv@^16.4.7",
+    "drizzle-kit": "npm:drizzle-kit@^0.30.5",
+    "drizzle-orm": "npm:drizzle-orm@^0.40.1",
+    "hono": "jsr:@hono/hono@^4.7.5",
+    "pg": "npm:pg@^8.14.1",
+    "tsx": "npm:tsx@^4.19.3",
+    "zod": "npm:zod@^3.24.2"
+  },
+  "tasks": {
+    "start": "deno run --allow-net ./src/main.ts"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  }
+}
