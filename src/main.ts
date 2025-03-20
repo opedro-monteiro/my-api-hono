@@ -1,7 +1,4 @@
-import { Hono } from "hono";
+import app from "@/app.ts";
+import env from "@/env.ts";
 
-const app = new Hono();
-
-app.get("/", (c) => c.text("Hello Deno paradeiro!"));
-
-Deno.serve({ port: 8787 }, app.fetch);
+Deno.serve({ port: Number(env.PORT) }, app.fetch);
