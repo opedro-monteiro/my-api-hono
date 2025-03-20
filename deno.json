@@ -22,6 +22,7 @@
     "pg": "npm:pg@^8.14.1",
     "pino": "npm:pino@^9.6.0",
     "pino-pretty": "npm:pino-pretty@^13.0.0",
+    "postgres": "npm:postgres@^3.4.5",
     "stoker": "npm:stoker@^1.4.2",
     "zod": "npm:zod@^3.24.1"
   }
