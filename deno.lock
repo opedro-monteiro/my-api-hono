@@ -7,11 +7,13 @@
     "jsr:@std/internal@^1.0.5": "1.0.5",
     "npm:@hono/zod-openapi@~0.18.3": "0.18.3_hono@4.6.16_zod@3.24.1",
     "npm:@scalar/hono-api-reference@~0.5.165": "0.5.165_hono@4.6.16",
+    "npm:@types/node@*": "22.12.0",
     "npm:@types/pg@^8.11.11": "8.11.11",
     "npm:drizzle-kit@*": "0.30.5_esbuild@0.19.12",
     "npm:drizzle-kit@0.30.5": "0.30.5_esbuild@0.19.12",
     "npm:drizzle-kit@~0.30.5": "0.30.5_esbuild@0.19.12",
-    "npm:drizzle-orm@~0.40.1": "0.40.1_@types+pg@8.11.11_pg@8.14.1",
+    "npm:drizzle-orm@*": "0.40.1_@types+pg@8.11.11_pg@8.14.1_postgres@3.4.5",
+    "npm:drizzle-orm@~0.40.1": "0.40.1_@types+pg@8.11.11_pg@8.14.1_postgres@3.4.5",
     "npm:drizzle-zod@~0.6.1": "0.6.1_drizzle-orm@0.40.1__@types+pg@8.11.11__pg@8.14.1_zod@3.24.1_@types+pg@8.11.11_pg@8.14.1",
     "npm:hono-pino@0.7": "0.7.0_hono@4.6.16_pino@9.6.0",
     "npm:hono@*": "4.6.16",
@@ -291,10 +293,18 @@
         "pg"
       ]
     },
+    "drizzle-orm@0.40.1_@types+pg@8.11.11_pg@8.14.1_postgres@3.4.5": {
+      "integrity": "sha512-aPNhtiJiPfm3qxz1czrnIDkfvkSdKGXYeZkpG55NPTVI186LmK2fBLMi4dsHpPHlJrZeQ92D322YFPHADBALew==",
+      "dependencies": [
+        "@types/pg",
+        "pg",
+        "postgres"
+      ]
+    },
     "drizzle-zod@0.6.1_drizzle-orm@0.40.1__@types+pg@8.11.11__pg@8.14.1_zod@3.24.1_@types+pg@8.11.11_pg@8.14.1": {
       "integrity": "sha512-huEbUgnsuR8tupnmLiyB2F1I2H9dswI3GfM36IbIqx9i0YUeYjRsDpJVyFVeziUvI1ogT9JHRL2Q03cC4QmvxA==",
       "dependencies": [
-        "drizzle-orm",
+        "drizzle-orm@0.40.1_@types+pg@8.11.11_pg@8.14.1",
         "zod"
       ]
     },
@@ -673,6 +683,16 @@
     "zod@3.24.1": {
       "integrity": "sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A=="
     }
+  },
+  "redirects": {
+    "https://deno.land/x/bcrypt/mod.ts": "https://deno.land/x/bcrypt@v0.4.1/mod.ts"
+  },
+  "remote": {
+    "https://deno.land/x/bcrypt@v0.4.1/mod.ts": "ff09bdae282583cf5f7d87efe37ddcecef7f14f6d12e8b8066a3058db8c6c2f7",
+    "https://deno.land/x/bcrypt@v0.4.1/src/bcrypt/base64.ts": "b8266450a4f1eb6960f60f2f7986afc4dde6b45bd2d7ee7ba10789e67e17b9f7",
+    "https://deno.land/x/bcrypt@v0.4.1/src/bcrypt/bcrypt.ts": "ec221648cc6453ea5e3803bc817c01157dada06aa6f7a0ba6b9f87aae32b21e2",
+    "https://deno.land/x/bcrypt@v0.4.1/src/main.ts": "08d201b289c8d9c46f8839c69cd6625b213863db29775c7a200afc3b540e64f8",
+    "https://deno.land/x/bcrypt@v0.4.1/src/worker.ts": "5a73bdfee9c9e622f47c9733d374b627dce52fb3ec1e74c8226698b3fc57ffac"
   },
   "workspace": {
     "dependencies": [
