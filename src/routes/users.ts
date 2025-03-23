@@ -3,10 +3,18 @@ import { Hono } from "npm:hono";
 
 const userRoutes = new Hono();
 
-// Rota para listar usuários
 userRoutes.get("/", async (c) => {
   try {
-    const users = await UserService.getUsers();
+    const { name, email, page = "1", limit = "10" } = c.req.query();
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const users = await UserService.getUsers({
+      name,
+      email,
+      page: pageNumber,
+      limit: limitNumber,
+    });
     return c.json(users);
   } catch (error) {
     if (error instanceof Error) {
@@ -17,7 +25,6 @@ userRoutes.get("/", async (c) => {
   }
 });
 
-// Rota para buscar usuário por ID
 userRoutes.get("/:id", async (c) => {
   try {
     const id = c.req.param("id");
@@ -37,7 +44,6 @@ userRoutes.get("/:id", async (c) => {
   }
 });
 
-// Rota para criar usuário
 userRoutes.post("/", async (c) => {
   try {
     const body = await c.req.json();
@@ -52,7 +58,6 @@ userRoutes.post("/", async (c) => {
   }
 });
 
-// Rota para atualizar usuário
 userRoutes.put("/:id", async (c) => {
   try {
     const id = c.req.param("id");
@@ -73,7 +78,6 @@ userRoutes.put("/:id", async (c) => {
   }
 });
 
-// Rota para deletar usuário
 userRoutes.delete("/:id", async (c) => {
   try {
     const id = c.req.param("id");

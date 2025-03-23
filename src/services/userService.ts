@@ -1,8 +1,9 @@
 import { db } from "@/drizzle/client.ts";
 import { Users } from "@/drizzle/schema/users.ts";
 import { CreateUserDto, createUserSchemaDto } from "@/models/user/createUserDto.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+
 
 export class UserService {
   // Criar usuário
@@ -51,19 +52,49 @@ export class UserService {
   }
 
   // Listar usuários
-  static async getUsers() {
-    const users = await db
-      .select({
-        id: Users.id,
-        name: Users.name,
-        email: Users.email,
-        createdAt: Users.createdAt,
-        updatedAt: Users.updatedAt,
-      })
-      .from(Users);
+  static async getUsers(options: {
+    name?: string;
+    email?: string;
+    page?: number;
+    limit?: number;
+}) {
+    const { name, email, page = 1, limit = 10 } = options;
+    const offset = (page - 1) * limit;
 
-    return users; // Retornar diretamente o array
-  }
+    // Query única para dados e contagem
+    const results = await db
+        .select({
+            record: {
+                id: Users.id,
+                name: Users.name,
+                email: Users.email,
+                createdAt: Users.createdAt,
+                updatedAt: Users.updatedAt
+            },
+            count: sql<number>`count(*) over()`
+        })
+        .from(Users)
+        .$dynamic() // Habilita modo dinâmico para múltiplos where
+        .where(name ? eq(Users.name, name) : undefined)
+        .where(email ? eq(Users.email, email) : undefined)
+        .limit(limit)
+        .offset(offset);
+
+        // Extrai os registros e a contagem
+    const users = results.map(r => r.record);
+    const totalItems = Number(results[0]?.count ?? 0);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+        data: users,
+        pagination: {
+            totalItems,
+            totalPages,
+            currentPage: page,
+            itemsPerPage: limit,
+        },
+    };
+}
 
   // Buscar usuário por ID
   static async getUserById(id: string) {
