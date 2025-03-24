@@ -3,7 +3,6 @@ import { Organizations } from "@/drizzle/schema/organizations.ts";
 import { eq } from "drizzle-orm";
 
 export class OrganizationsService {
-  // Criar uma organização
   static async createOrganization(name: string) {
     try {
       const newOrganization = await db
@@ -21,7 +20,6 @@ export class OrganizationsService {
     }
   }
 
-  // Listar todas as organizações
   static async getOrganizations() {
     try {
       const organizations = await db
@@ -38,7 +36,6 @@ export class OrganizationsService {
     }
   }
 
-  // Buscar uma organização por ID
   static async getOrganizationById(id: string) {
     try {
       const organization = await db
@@ -60,7 +57,6 @@ export class OrganizationsService {
     }
   }
 
-  // Atualizar uma organização
   static async updateOrganization(id: string, name: string) {
     try {
       const updatedOrganization = await db
@@ -83,7 +79,6 @@ export class OrganizationsService {
     }
   }
 
-  // Deletar uma organização
   static async deleteOrganization(id: string) {
     try {
       const deletedOrganization = await db

@@ -3,7 +3,6 @@ import { Hono } from "npm:hono";
 
 const userOrganizationsRoutes = new Hono();
 
-// Criar uma relação usuário-organização
 userOrganizationsRoutes.post("/", async (c) => {
   try {
     const { userId, organizationId, isActive } = await c.req.json();
@@ -18,7 +17,6 @@ userOrganizationsRoutes.post("/", async (c) => {
   }
 });
 
-// Listar todas as relações usuário-organização
 userOrganizationsRoutes.get("/", async (c) => {
   try {
     const userOrganizations = await UserOrganizationsService.getUserOrganizations();
@@ -32,7 +30,6 @@ userOrganizationsRoutes.get("/", async (c) => {
   }
 });
 
-// Buscar uma relação usuário-organização por ID
 userOrganizationsRoutes.get("/:id", async (c) => {
   try {
     const id = c.req.param("id");
@@ -47,7 +44,6 @@ userOrganizationsRoutes.get("/:id", async (c) => {
   }
 });
 
-// Atualizar uma relação usuário-organização
 userOrganizationsRoutes.put("/:id", async (c) => {
   try {
     const id = c.req.param("id");
@@ -63,7 +59,6 @@ userOrganizationsRoutes.put("/:id", async (c) => {
   }
 });
 
-// Deletar uma relação usuário-organização
 userOrganizationsRoutes.delete("/:id", async (c) => {
   try {
     const id = c.req.param("id");

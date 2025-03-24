@@ -3,7 +3,6 @@ import { Hono } from "npm:hono";
 
 const organizationsRoutes = new Hono();
 
-// Criar uma organização
 organizationsRoutes.post("/", async (c) => {
   try {
     const { name } = await c.req.json();
@@ -18,7 +17,6 @@ organizationsRoutes.post("/", async (c) => {
   }
 });
 
-// Listar todas as organizações
 organizationsRoutes.get("/", async (c) => {
   try {
     const organizations = await OrganizationsService.getOrganizations();
@@ -32,7 +30,6 @@ organizationsRoutes.get("/", async (c) => {
   }
 });
 
-// Buscar uma organização por ID
 organizationsRoutes.get("/:id", async (c) => {
   try {
     const id = c.req.param("id");
@@ -47,7 +44,6 @@ organizationsRoutes.get("/:id", async (c) => {
   }
 });
 
-// Atualizar uma organização
 organizationsRoutes.put("/:id", async (c) => {
   try {
     const id = c.req.param("id");
@@ -63,7 +59,6 @@ organizationsRoutes.put("/:id", async (c) => {
   }
 });
 
-// Deletar uma organização
 organizationsRoutes.delete("/:id", async (c) => {
   try {
     const id = c.req.param("id");

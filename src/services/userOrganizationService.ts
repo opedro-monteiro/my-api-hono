@@ -3,10 +3,8 @@ import { UserOrganizations } from "@/drizzle/schema/userOrganizations.ts";
 import { and, eq } from "drizzle-orm";
 
 export class UserOrganizationsService {
-  // Criar uma relação entre usuário e organização
   static async createUserOrganization(userId: string, organizationId: string, isActive: boolean = true) {
     try {
-      // Verificar se o usuário já pertence à organização
       const existingRelation = await db
         .select()
         .from(UserOrganizations)
@@ -21,7 +19,6 @@ export class UserOrganizationsService {
         throw new Error("O usuário já pertence a esta organização.");
       }
 
-      // Se a nova relação for ativa, desativar a organização ativa atual do usuário
       if (isActive) {
         await db
           .update(UserOrganizations)
@@ -33,7 +30,6 @@ export class UserOrganizationsService {
           ));
       }
 
-      // Criar a nova relação
       const newUserOrganization = await db
         .insert(UserOrganizations)
         .values({ userId, organizationId, isActive })
@@ -49,7 +45,6 @@ export class UserOrganizationsService {
     }
   }
 
-  // Listar todas as relações usuário-organização
   static async getUserOrganizations() {
     try {
       const userOrganizations = await db
@@ -66,7 +61,6 @@ export class UserOrganizationsService {
     }
   }
 
-  // Buscar uma relação usuário-organização por ID
   static async getUserOrganizationById(id: string) {
     try {
       const userOrganization = await db
@@ -88,10 +82,8 @@ export class UserOrganizationsService {
     }
   }
 
-  // Atualizar uma relação usuário-organização
   static async updateUserOrganization(id: string, isActive: boolean) {
     try {
-      // Se a relação for ativada, desativar a organização ativa atual do usuário
       if (isActive) {
         const userOrganization = await db
           .select()
@@ -112,7 +104,6 @@ export class UserOrganizationsService {
         }
       }
 
-      // Atualizar a relação
       const updatedUserOrganization = await db
         .update(UserOrganizations)
         .set({ isActive })
@@ -133,7 +124,6 @@ export class UserOrganizationsService {
     }
   }
 
-  // Deletar uma relação usuário-organização
   static async deleteUserOrganization(id: string) {
     try {
       const deletedUserOrganization = await db
