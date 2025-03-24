@@ -1,12 +1,11 @@
 import { db } from "@/drizzle/client.ts";
+import { UserOrganizations } from "@/drizzle/schema/userOrganizations.ts";
 import { Users } from "@/drizzle/schema/users.ts";
 import { CreateUserDto, createUserSchemaDto } from "@/models/user/createUserDto.ts";
 import { eq, sql } from "drizzle-orm";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
-
 export class UserService {
-  // Criar usuário
   static async createUser(userDto: CreateUserDto) {
     try {
       const result = createUserSchemaDto.safeParse(userDto);
@@ -17,24 +16,20 @@ export class UserService {
 
       const data = result.data;
 
-      // Verificar se o usuário já existe
       const existsUser = await db.select().from(Users).where(eq(Users.email, data.email));
 
       if (existsUser.length > 0) {
         throw new Error("Usuário já existe com esse e-mail");
       }
 
-      // Gerar hash da senha
       const hashPassword = await bcrypt.hash(data.password);
 
-      // Inserir o usuário no banco de dados
       const user = await db.insert(Users).values({
         name: data.name,
         email: data.email,
         password: hashPassword,
       }).returning();
 
-      // Retornar dados do usuário
       return {
         id: user[0].id,
         name: user[0].name,
@@ -51,7 +46,6 @@ export class UserService {
     }
   }
 
-  // Listar usuários
   static async getUsers(options: {
     name?: string;
     email?: string;
@@ -61,7 +55,6 @@ export class UserService {
     const { name, email, page = 1, limit = 10 } = options;
     const offset = (page - 1) * limit;
 
-    // Query única para dados e contagem
     const results = await db
         .select({
             record: {
@@ -74,13 +67,12 @@ export class UserService {
             count: sql<number>`count(*) over()`
         })
         .from(Users)
-        .$dynamic() // Habilita modo dinâmico para múltiplos where
+        .$dynamic()
         .where(name ? eq(Users.name, name) : undefined)
         .where(email ? eq(Users.email, email) : undefined)
         .limit(limit)
         .offset(offset);
 
-        // Extrai os registros e a contagem
     const users = results.map(r => r.record);
     const totalItems = Number(results[0]?.count ?? 0);
     const totalPages = Math.ceil(totalItems / limit);
@@ -96,7 +88,6 @@ export class UserService {
     };
 }
 
-  // Buscar usuário por ID
   static async getUserById(id: string) {
     const user = await db
       .select({
@@ -116,7 +107,6 @@ export class UserService {
     return user[0];
   }
 
-  // Atualizar usuário
   static async updateUser(id: string, name: string, email: string) {
     const existingUser = await db.select().from(Users).where(eq(Users.id, id));
 
@@ -139,19 +129,35 @@ export class UserService {
     };
   }
 
-  // Deletar usuário
   static async deleteUser(id: string) {
-    const existingUser = await db.select().from(Users).where(eq(Users.id, id));
+    try {
+      const existingUser = await db
+        .select()
+        .from(Users)
+        .where(eq(Users.id, id));
 
-    if (existingUser.length === 0) {
-      throw new Error("Usuário não encontrado");
+      if (existingUser.length === 0) {
+        throw new Error("Usuário não encontrado");
+      }
+
+      await db
+        .delete(UserOrganizations)
+        .where(
+          eq(UserOrganizations.userId, id),
+        );
+
+      const deletedUser = await db
+        .delete(Users)
+        .where(eq(Users.id, id))
+        .returning();
+
+      return deletedUser[0];
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Erro ao deletar usuário: ${error.message}`);
+      } else {
+        throw new Error("Erro desconhecido ao deletar usuário.");
+      }
     }
-
-    const deletedUser = await db
-      .delete(Users)
-      .where(eq(Users.id, id))
-      .returning();
-
-    return deletedUser[0];
   }
 }

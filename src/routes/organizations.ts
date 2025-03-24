@@ -1,16 +1,81 @@
+import { OrganizationsService } from "@/services/OrganizationService.ts";
 import { Hono } from "npm:hono";
 
-const organizationRoutes = new Hono();
+const organizationsRoutes = new Hono();
 
-// Rota para listar usuários
-organizationRoutes.get("/", (c) => {
-  return c.json({ message: "Lista de Oranizações" });
+// Criar uma organização
+organizationsRoutes.post("/", async (c) => {
+  try {
+    const { name } = await c.req.json();
+    const newOrganization = await OrganizationsService.createOrganization(name);
+    return c.json(newOrganization, 201);
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 400);
+    } else {
+      return c.json({ error: "Erro desconhecido ao criar organização." }, 500);
+    }
+  }
 });
 
-// Rota para criar usuário
-organizationRoutes.post("/", async (c) => {
-  const body = await c.req.json();
-  return c.json({ message: "Oranização criada com sucesso", data: body });
+// Listar todas as organizações
+organizationsRoutes.get("/", async (c) => {
+  try {
+    const organizations = await OrganizationsService.getOrganizations();
+    return c.json(organizations);
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 500);
+    } else {
+      return c.json({ error: "Erro desconhecido ao listar organizações." }, 500);
+    }
+  }
 });
 
-export default organizationRoutes;
+// Buscar uma organização por ID
+organizationsRoutes.get("/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const organization = await OrganizationsService.getOrganizationById(id);
+    return c.json(organization);
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 404);
+    } else {
+      return c.json({ error: "Erro desconhecido ao buscar organização." }, 500);
+    }
+  }
+});
+
+// Atualizar uma organização
+organizationsRoutes.put("/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const { name } = await c.req.json();
+    const updatedOrganization = await OrganizationsService.updateOrganization(id, name);
+    return c.json(updatedOrganization);
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 400);
+    } else {
+      return c.json({ error: "Erro desconhecido ao atualizar organização." }, 500);
+    }
+  }
+});
+
+// Deletar uma organização
+organizationsRoutes.delete("/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const deletedOrganization = await OrganizationsService.deleteOrganization(id);
+    return c.json({ message: "Organização deletada com sucesso", deletedOrganization });
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 400);
+    } else {
+      return c.json({ error: "Erro desconhecido ao deletar organização." }, 500);
+    }
+  }
+});
+
+export default organizationsRoutes;

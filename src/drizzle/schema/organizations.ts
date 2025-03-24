@@ -1,8 +1,8 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
-export const organizations = pgTable("organizations", {
+export const Organizations = pgTable("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  name: text("name").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -10,3 +10,4 @@ export const organizations = pgTable("organizations", {
     .notNull()
     .defaultNow(),
 });
+
