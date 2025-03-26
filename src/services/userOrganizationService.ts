@@ -1,6 +1,9 @@
 import { db } from "@/drizzle/client.ts";
+import { Organizations } from "@/drizzle/schema/organizations.ts";
 import { UserOrganizations } from "@/drizzle/schema/userOrganizations.ts";
+import { Users } from "@/drizzle/schema/users.ts";
 import { and, eq } from "drizzle-orm";
+import { create } from "node:domain";
 
 export class UserOrganizationsService {
   static async createUserOrganization(userId: string, organizationId: string, isActive: boolean = true) {
@@ -48,8 +51,19 @@ export class UserOrganizationsService {
   static async getUserOrganizations() {
     try {
       const userOrganizations = await db
-        .select()
-        .from(UserOrganizations);
+        .select({
+          userId: Users.id,
+          organizationId: Organizations.id,
+          userOrganizationId: UserOrganizations.id,
+          isActive: UserOrganizations.isActive,
+          userName: Users.name,
+          email: Users.email,
+          organizationName: Organizations.name,
+          createdAt: UserOrganizations.createdAt,
+        })
+        .from(UserOrganizations)
+        .innerJoin(Users, eq(Users.id, UserOrganizations.userId))
+        .innerJoin(Organizations, eq(Organizations.id, UserOrganizations.organizationId));
 
       return userOrganizations;
     } catch (error) {
